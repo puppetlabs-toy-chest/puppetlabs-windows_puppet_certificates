@@ -1,0 +1,34 @@
+{
+  "name": "puppetlabs-windows_puppet_certificates",
+  "version": "0.1.0",
+  "author": "glennsarti",
+  "summary": "A Puppet module to import the puppet certificates into the machine certificate store in Windows",
+  "license": "Apache-2.0",
+  "source": "https://github.com/puppetlabs/puppetlabs-windows_puppet_certificates.git",
+  "dependencies": [
+    { "name":"puppetlabs/powershell", "version_requirement":">= 2.0.0" }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "windows",
+      "operatingsystemrelease": [
+        "8",
+        "10",
+        "2008",
+        "2008 R2",
+        "2012",
+        "2012 R2",
+        "2016"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.7.0 < 6.0.0"
+    }
+  ],
+  "pdk-version": "1.1.0",
+  "template-url": "file://C:/PROGRA~1/PUPPET~1/DevelopmentKit/share/cache/pdk-module-template.git",
+  "template-ref": "heads/master-0-g54e88a4"
+}
