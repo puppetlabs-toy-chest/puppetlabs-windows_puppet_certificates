@@ -6,7 +6,8 @@
   "license": "Apache-2.0",
   "source": "https://github.com/puppetlabs/puppetlabs-windows_puppet_certificates.git",
   "dependencies": [
-    { "name":"puppetlabs/powershell", "version_requirement":">= 2.0.0" }
+    { "name":"puppetlabs/powershell", "version_requirement":">= 2.0.0" },
+    { "name":"puppetlabs/stdlib", "version_requirement":">= 4.13.0" }
   ],
   "operatingsystem_support": [
     {
