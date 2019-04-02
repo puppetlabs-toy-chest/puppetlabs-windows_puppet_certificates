@@ -38,7 +38,7 @@ class windows_puppet_certificates(
     # Add the Puppet Master certificate into the Trusted Root CA
     windows_puppet_certificates::windows_certificate { 'puppet_master_windows_certificate':
       ensure    => $ensure,
-      cert_path => "${settings::confdir}/ssl/certs/ca.pem",
+      cert_path => "${facts['puppet_sslpaths']['certdir']['path']}/ca.pem",
       key_path  => undef,
       cert_type => 'trusted_root_ca',
     }
@@ -48,8 +48,8 @@ class windows_puppet_certificates(
     # Add the client certificate (with private key) to the Personal certificates
     windows_puppet_certificates::windows_certificate { 'puppet_client_windows_certificate':
       ensure    => $ensure,
-      cert_path => "${settings::confdir}/ssl/certs/${facts['clientcert']}.pem",
-      key_path  => "${settings::confdir}/ssl/private_keys/${facts['clientcert']}}.pem",
+      cert_path => "${facts['puppet_sslpaths']['certdir']['path']}/${facts['clientcert']}.pem",
+      key_path  => "${facts['puppet_sslpaths']['privatekeydir']['path']}/${facts['clientcert']}.pem",
       cert_type => 'personal',
     }
   }
