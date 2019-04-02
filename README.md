@@ -1,12 +1,18 @@
+![](https://img.shields.io/puppetforge/pdk-version/puppetlabs/windows_puppet_certificates.svg?style=popout)
+![](https://img.shields.io/puppetforge/v/puppetlabs/windows_puppet_certificates.svg?style=popout)
+![](https://img.shields.io/puppetforge/dt/puppetlabs/windows_puppet_certificates.svg?style=popout)
+[![Build Status](https://travis-ci.org/puppetlabs/puppetlabs-windows_puppet_certificates.svg?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-windows_puppet_certificates)
 
 # windows_puppet_certificates
 
 #### Table of Contents
 
 1. [Description](#description)
-2. [Usage - Configuration options and additional functionality](#usage)
-3. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-4. [Limitations - OS compatibility, etc.](#limitations)
+2. [Usage](#usage)
+3. [Reference](#reference)
+4. [Changelog](#changelog)
+5. [Limitations](#limitations)
+6. [Contributing](#contributing)
 
 ## Description
 
@@ -37,24 +43,25 @@ class { 'windows_puppet_certificates':
   manage_master_cert => true,
   manage_client_cert => true,
 }
-
-include windows_puppet_certificates
 ```
 
 ## Reference
 
-### windows_puppet_certificates
+This module is documented via
+`pdk bundle exec puppet strings generate --format markdown`.
+Please see [REFERENCE.md](REFERENCE.md) for more info.
 
-#### manage_master_cert
+## Changelog
 
-When set to true the module will manage the Puppet Master CA certificate into the computer Trusted Root CA certificate store.  By default this is set to true
-
-#### manage_client_cert
-
-When set to true the module will manage the Puppet Client certificate, and private key, into the computer Personal certificate store.  By default this is set to false, as importing a private key should be an explicit decision.
-
-The public key is marked as Not Exportable in the certificate store.
+[CHANGELOG.md](CHANGELOG.md) is generated prior to each release via
+`pdk bundle exec rake changelog`. This proecss relies on labels that are applied
+to each pull request.
 
 ## Limitations
 
 Currently the module only supports `ensure => present`, that is the module can only add the certificates, and ensure they exist.
+
+## Contributing
+
+Pull requests are welcome!
+
