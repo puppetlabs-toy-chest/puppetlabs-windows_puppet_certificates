@@ -41,6 +41,14 @@ class { 'windows_puppet_certificates':
 }
 ```
 
+##### Specify the Puppet config directory
+
+```puppet
+class { 'windows_puppet_certificates':
+  'confdir_path' => 'c:/programdata/puppetlabs/puppet/etc',
+}
+```
+
 #### Parameters
 
 The following parameters are available in the `windows_puppet_certificates` class.
@@ -73,6 +81,16 @@ private key, into the computer Personal certificate store.
 Default: false - importing a private key should be an explicit decision.
 
 Default value: `false`
+
+##### `confdir_path`
+
+Data type: `Optional[Stdlib::Windowspath]`
+
+If set, this path is used instead of the path provided by the
+`puppet_confdir` fact from the puppetlabs/puppet_agent module
+Default: undef
+
+Default value: `undef`
 
 ## Defined types
 
