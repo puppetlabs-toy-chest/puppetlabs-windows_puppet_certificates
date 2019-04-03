@@ -4,5 +4,6 @@
 fixtures:
   forge_modules:
     powershell: "puppetlabs/powershell"
+    puppet_agent: "puppetlabs/puppet_agent"
     stdlib: "puppetlabs/stdlib"
 
