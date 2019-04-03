@@ -6,8 +6,14 @@
   "license": "Apache-2.0",
   "source": "https://github.com/puppetlabs/puppetlabs-windows_puppet_certificates.git",
   "dependencies": [
-    { "name":"puppetlabs/powershell", "version_requirement":">= 2.0.0" },
-    { "name":"puppetlabs/stdlib", "version_requirement":">= 4.13.0" }
+    {
+      "name": "puppetlabs/powershell",
+      "version_requirement": ">= 2.0.0 < 3.0.0"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.13.0 < 6.0.0"
+    }
   ],
   "operatingsystem_support": [
     {
@@ -26,10 +32,10 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.7.0 < 6.0.0"
+      "version_requirement": ">= 4.7.0 < 7.0.0"
     }
   ],
-  "pdk-version": "1.1.0",
-  "template-url": "file://C:/PROGRA~1/PUPPET~1/DevelopmentKit/share/cache/pdk-module-template.git",
-  "template-ref": "heads/master-0-g54e88a4"
+  "pdk-version": "1.9.1",
+  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
+  "template-ref": "1.9.1-0-g6945d31"
 }
