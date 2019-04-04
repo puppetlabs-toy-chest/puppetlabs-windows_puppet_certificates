@@ -5,7 +5,11 @@ describe 'windows_puppet_certificates' do
     context "on #{os}" do
       context 'with defaults' do
         let(:facts) do
-          facts.merge(puppet_confdir: 'C:/ProgramData/PuppetLabs/puppet/etc')
+          facts.merge(
+            puppet_cert_paths: {
+              confdir: 'C:/ProgramData/PuppetLabs/puppet/etc',
+            },
+          )
         end
 
         it { is_expected.to compile.with_all_deps }
@@ -13,7 +17,11 @@ describe 'windows_puppet_certificates' do
 
       context 'with manage_client_cert => true' do
         let(:facts) do
-          facts.merge(puppet_confdir: 'C:/ProgramData/PuppetLabs/puppet/etc')
+          facts.merge(
+            puppet_cert_paths: {
+              confdir: 'C:/ProgramData/PuppetLabs/puppet/etc',
+            },
+          )
         end
 
         let(:params) do

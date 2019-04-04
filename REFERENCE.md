@@ -84,13 +84,12 @@ Default value: `false`
 
 ##### `confdir_path`
 
-Data type: `Optional[Stdlib::Windowspath]`
+Data type: `Stdlib::Windowspath`
 
-If set, this path is used instead of the path provided by the
-`puppet_confdir` fact from the puppetlabs/puppet_agent module
-Default: undef
+The path to the Puppet config directory.
+Default: the value of `$facts['puppet_cert_paths']['confdir']`
 
-Default value: `undef`
+Default value: $facts['puppet_cert_paths']['confdir']
 
 ## Defined types
 
