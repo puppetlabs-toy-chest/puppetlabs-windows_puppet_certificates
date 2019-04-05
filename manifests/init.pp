@@ -18,6 +18,11 @@
 #     manage_client_cert => true,
 #   }
 #
+# @example Specify the Puppet config directory
+#   class { 'windows_puppet_certificates':
+#     'confdir_path' => 'c:/programdata/puppetlabs/puppet/etc',
+#   }
+#
 # @param ensure
 #   Valid options are `present` and `absent`
 #   Default: present
@@ -29,16 +34,20 @@
 #   When set to true the module will import the Puppet Client certificate, and
 #   private key, into the computer Personal certificate store.
 #   Default: false - importing a private key should be an explicit decision.
+# @param confdir_path
+#   The path to the Puppet config directory.
+#   Default: the value of `$facts['puppet_cert_paths']['confdir']`
 class windows_puppet_certificates(
     Enum['present', 'absent'] $ensure = 'present',
     Boolean $manage_master_cert = true,
     Boolean $manage_client_cert = false,
+    Stdlib::Windowspath $confdir_path = $facts['puppet_cert_paths']['confdir'],
   ) {
   if $manage_master_cert {
     # Add the Puppet Master certificate into the Trusted Root CA
     windows_puppet_certificates::windows_certificate { 'puppet_master_windows_certificate':
       ensure    => $ensure,
-      cert_path => "${facts['puppet_sslpaths']['certdir']['path']}/ca.pem",
+      cert_path => "${confdir_path}/ssl/certs/ca.pem",
       key_path  => undef,
       cert_type => 'trusted_root_ca',
     }
@@ -48,8 +57,8 @@ class windows_puppet_certificates(
     # Add the client certificate (with private key) to the Personal certificates
     windows_puppet_certificates::windows_certificate { 'puppet_client_windows_certificate':
       ensure    => $ensure,
-      cert_path => "${facts['puppet_sslpaths']['certdir']['path']}/${facts['clientcert']}.pem",
-      key_path  => "${facts['puppet_sslpaths']['privatekeydir']['path']}/${facts['clientcert']}.pem",
+      cert_path => "${confdir_path}/ssl/certs/${facts['clientcert']}.pem",
+      key_path  => "${confdir_path}/ssl/private_keys/${facts['clientcert']}.pem",
       cert_type => 'personal',
     }
   }

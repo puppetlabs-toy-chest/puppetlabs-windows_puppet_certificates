@@ -51,6 +51,21 @@ This module is documented via
 `pdk bundle exec puppet strings generate --format markdown`.
 Please see [REFERENCE.md](REFERENCE.md) for more info.
 
+Additionally, a custom fact named `puppet_cert_paths` is included in this
+module. A sample of what it adds to the output of `puppet facts` on
+Windows is below:
+
+```json
+"puppet_cert_paths": {
+    "confdir": "C:/ProgramData/PuppetLabs/puppet/etc",
+    "ssldir": "C:/ProgramData/PuppetLabs/puppet/etc/ssl",
+    "cert_dir": "C:/ProgramData/PuppetLabs/puppet/etc/ssl/certs",
+    "ca_path": "C:/ProgramData/PuppetLabs/puppet/etc/ssl/certs/ca.pem",
+    "client_cert_path": "C:/ProgramData/PuppetLabs/puppet/etc/ssl/certs/test.example.com.pem",
+    "client_key_path": "C:/ProgramData/PuppetLabs/puppet/etc/ssl/private_keys/test.example.com.pem"
+},
+```
+
 ## Changelog
 
 [CHANGELOG.md](CHANGELOG.md) is generated prior to each release via
