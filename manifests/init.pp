@@ -2,7 +2,7 @@
 #
 # This module takes the Puppet Master CA certificate and Puppet Agent client
 # certificate and imports them into the Windows Certificate Store and marks the
-# public key as Not Exportable. This is useful to allow Windows applications to
+# private key as Not Exportable. This is useful to allow Windows applications to
 # consume these certificates in a Windows way. For example:
 # - for client certificate based authentication in EAP in 802.1x
 # - for automatically trusting the PE Console in web browsers
