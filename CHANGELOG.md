@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## Release 0.1.0
 
+This is the initial release of the puppetlabs/windows_puppet_certificates module.
+
+This module takes the Puppet Master CA certificate and Puppet Agent client certificate and imports them into the Windows Certificate Store.
+
+This is useful to allow Windows applications to consume these certificates in a Windows way, for example;
+
+  * For client certificate based authentication in EAP in 802.1x
+  * For automatically trusting the PE Console in web browsers
+  * For encrypting secrets for the client to consume, for example Hiera eYaml
+  * For encrypting secrets for the server to consume, for example encrypting Bitlocker keys
+  * For example, you could use it to manage the certificates for SSL winrm (https://forge.puppet.com/nekototori/winrmssl) 
+
 **Features**
 
 **Bugfixes**
