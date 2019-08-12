@@ -28,6 +28,9 @@ This is useful to allow Windows applications to consume these certificates in a 
 
 * For encrypting secrets for the server to consume, for example encrypting Bitlocker keys
 
+* For example, you could use it to manage the certificates for SSL winrm (https://forge.puppet.com/nekototori/winrmssl)
+
+
 ## Usage
 
 By default the module will only import the Puppet Master CA cert
