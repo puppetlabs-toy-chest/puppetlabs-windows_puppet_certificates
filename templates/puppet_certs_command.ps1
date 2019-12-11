@@ -242,15 +242,9 @@ if (-not (Test-Path -Path $cert_path)) {
   exit 1
 }
 
-Write-Verbose "Loading certificate from disk..."
-$pfx_content = [System.IO.File]::ReadAllText($cert_path)
-if ($key_path -ne '') {
-  $pfx_content += [System.IO.File]::ReadAllText($key_path)
-}
-$pfx = [PuppetCerts.PEMToX509]::Convert($pfx_content)
-
-$cert_thumbprint = $pfx.Thumbprint.ToUpper()
-Write-Verbose "Certificate thumbprint is $cert_thumbprint"
+Write-Verbose "Loading certificate(s) from disk..."
+$raw_content = [System.IO.File]::ReadAllText($cert_path)
+$certs = $raw_content -Split '(?<!^)(?=-----BEGIN CERTIFICATE-----)' 
 
 Write-Verbose "Opening certificate store $cert_type ..."
 $storename = $null
@@ -263,20 +257,29 @@ switch ($cert_type)
 $cert_store = New-Object -Type System.Security.Cryptography.X509Certificates.X509Store($storename, [System.Security.Cryptography.X509Certificates.StoreLocation]::LocalMachine)
 $cert_store.Open('ReadWrite')
 
-Write-Verbose "Checking if certificate exists..."
-$found = $false
-$cert_store.Certificates | % {
-  $found = $found -or ($_.Thumbprint.ToUpper() -eq $cert_thumbprint)
+$certs | ForEach {
+    if ($key_path -ne '') {
+      $pfx_content += [System.IO.File]::ReadAllText($key_path)
+    }
+    $pfx = [PuppetCerts.PEMToX509]::Convert($_)
+
+    $cert_thumbprint = $pfx.Thumbprint.ToUpper()
+    Write-Verbose "Certificate thumbprint is $cert_thumbprint"
+
+    Write-Verbose "Checking if certificate exists..."
+    $found = $false
+    $cert_store.Certificates | % {
+      $found = $found -or ($_.Thumbprint.ToUpper() -eq $cert_thumbprint)
+    }
+
+    if ($found) {
+      Write-Verbose "Certificate already exists"
+      Continue
+    }
+
+    Write-Verbose "Adding certificate to the store..."
+    $cert_store.Add($pfx) | Out-Null
+    $cert_store.Close | Out-Null
+
+    Write-Verbose "Certificate added"
 }
-
-if ($found) {
-  Write-Verbose "Certificate already exists"
-  exit 0
-}
-
-Write-Verbose "Adding certificate to the store..."
-$cert_store.Add($pfx) | Out-Null
-$cert_store.Close | Out-Null
-
-Write-Verbose "Certificate added"
-exit 0
