@@ -279,7 +279,8 @@ $certs | ForEach {
 
     Write-Verbose "Adding certificate to the store..."
     $cert_store.Add($pfx) | Out-Null
-    $cert_store.Close | Out-Null
 
     Write-Verbose "Certificate added"
 }
+
+$cert_store.Close | Out-Null
