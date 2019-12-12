@@ -257,29 +257,29 @@ switch ($cert_type)
 $cert_store = New-Object -Type System.Security.Cryptography.X509Certificates.X509Store($storename, [System.Security.Cryptography.X509Certificates.StoreLocation]::LocalMachine)
 $cert_store.Open('ReadWrite')
 
- $certs | ForEach {
-    if ($key_path -ne '') {
-      $pfx_content += [System.IO.File]::ReadAllText($key_path)
-    }
-    $pfx = [PuppetCerts.PEMToX509]::Convert($_)
+$certs | ForEach {
+  if ($key_path -ne '') {
+    $pfx_content += [System.IO.File]::ReadAllText($key_path)
+  }
+  $pfx = [PuppetCerts.PEMToX509]::Convert($_)
 
-    $cert_thumbprint = $pfx.Thumbprint.ToUpper()
-    Write-Verbose "Certificate thumbprint is $cert_thumbprint"
+  $cert_thumbprint = $pfx.Thumbprint.ToUpper()
+  Write-Verbose "Certificate thumbprint is $cert_thumbprint"
 
-    Write-Verbose "Checking if certificate exists..."
-    $found = $false
-    $cert_store.Certificates | % {
-      $found = $found -or ($_.Thumbprint.ToUpper() -eq $cert_thumbprint)
-    }
+  Write-Verbose "Checking if certificate exists..."
+  $found = $false
+  $cert_store.Certificates | % {
+    $found = $found -or ($_.Thumbprint.ToUpper() -eq $cert_thumbprint)
+  }
 
-    if ($found) {
-      Write-Verbose "Certificate already exists"
-    } else {
-      Write-Verbose "Adding certificate to the store..."
-      $cert_store.Add($pfx) | Out-Null
+  if ($found) {
+    Write-Verbose "Certificate already exists"
+  } else {
+    Write-Verbose "Adding certificate to the store..."
+    $cert_store.Add($pfx) | Out-Null
 
-      Write-Verbose "Certificate added"
-    }
+    Write-Verbose "Certificate added"
+  }
 
 }
 
