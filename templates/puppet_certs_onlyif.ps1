@@ -9,13 +9,6 @@ if (-not (Test-Path -Path $cert_path)) {
   exit 0
 }
 
-Write-Verbose "Loading certificate from disk..."
-$pfx = New-Object -Type System.Security.Cryptography.X509Certificates.X509Certificate2
-$pfx.import($cert_path)
-
-$cert_thumbprint = $pfx.Thumbprint.ToUpper()
-Write-Verbose "Certificate thumbprint is $cert_thumbprint"
-
 Write-Verbose "Opening certificate store $cert_type ..."
 $storename = $null
 switch ($cert_type)
@@ -27,16 +20,33 @@ switch ($cert_type)
 $cert_store = New-Object -Type System.Security.Cryptography.X509Certificates.X509Store($storename, [System.Security.Cryptography.X509Certificates.StoreLocation]::LocalMachine)
 $cert_store.Open('ReadWrite')
 
-Write-Verbose "Checking if certificate exists..."
-$found = $false
-$cert_store.Certificates | % {
-  $found = $found -or ($_.Thumbprint.ToUpper() -eq $cert_thumbprint)
+Write-Verbose "Loading certificate from disk..."
+$raw_content = [System.IO.File]::ReadAllText($cert_path)
+
+$allfound = $true
+$raw_content | Out-Certificate | ForEach-Object -Process {
+  $base64cert = $_ -replace "`n","" -replace "`r",""
+  $certbytes = [Convert]::FromBase64String($base64cert)
+  $pfx = New-Object -Type System.Security.Cryptography.X509Certificates.X509Certificate2($certbytes, 'XXXXXXXXXXXXXX')
+
+  $cert_thumbprint = $pfx.Thumbprint.ToUpper()
+  Write-Verbose "Certificate thumbprint is $cert_thumbprint"
+
+  Write-Verbose "Checking if certificate exists..."
+  $found = $cert_store.Certificates | Where-Object { $_.Thumbprint.ToUpper() -eq $cert_thumbprint } | Select-Object -First 1
+
+  if ($null -ne $found) {
+    Write-Verbose "Certificate was found"
+  } else {
+    Write-Verbose "Certificate is missing"
+    $allfound = $false
+  }
 }
 
-if ($found) {
-  Write-Verbose "Certificate was found"
+if ($allfound) {
+  Write-Verbose "All certificates were found"
   exit 1
 } else {
-  Write-Verbose "Certificate is missing"
+  Write-Verbose "One or more certificates is missing"
   exit 0
 }
