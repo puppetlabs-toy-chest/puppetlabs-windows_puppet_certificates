@@ -284,3 +284,4 @@ $raw_content | Out-Certificate | ForEach-Object -Process {
 }
 
 $cert_store.Close | Out-Null
+exit 0
