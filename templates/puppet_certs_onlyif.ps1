@@ -22,25 +22,20 @@ $cert_store.Open('ReadWrite')
 
 Write-Verbose "Loading certificate from disk..."
 $raw_content = [System.IO.File]::ReadAllText($cert_path)
-$arr = $raw_content -Split '(?:-----BEGIN CERTIFICATE-----|-----END CERTIFICATE-----)'
-$certs = $arr | Where-Object {$_.Length -gt 10}
 
 $allfound = $true
-$certs | ForEach {
+$raw_content | Out-Certificate | ForEach-Object -Process {
   $base64cert = $_ -replace "`n","" -replace "`r",""
   $certbytes = [Convert]::FromBase64String($base64cert)
   $pfx = New-Object -Type System.Security.Cryptography.X509Certificates.X509Certificate2($certbytes, 'XXXXXXXXXXXXXX')
-  
+
   $cert_thumbprint = $pfx.Thumbprint.ToUpper()
   Write-Verbose "Certificate thumbprint is $cert_thumbprint"
 
   Write-Verbose "Checking if certificate exists..."
-  $found = $false
-  $cert_store.Certificates | % {
-    $found = $found -or ($_.Thumbprint.ToUpper() -eq $cert_thumbprint)
-  }
+  $found = $cert_store.Certificates | Where-Object { $_.Thumbprint.ToUpper() -eq $cert_thumbprint } | Select-Object -First 1
 
-  if ($found) {
+  if ($null -ne $found) {
     Write-Verbose "Certificate was found"
   } else {
     Write-Verbose "Certificate is missing"
@@ -54,4 +49,4 @@ if ($allfound) {
 } else {
   Write-Verbose "One or more certificates is missing"
   exit 0
-} 
+}

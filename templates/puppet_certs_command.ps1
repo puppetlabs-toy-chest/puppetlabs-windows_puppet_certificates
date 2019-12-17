@@ -121,19 +121,19 @@ namespace PuppetCerts
             try
             {
                 twobytes = binaryReader.ReadUInt16();
-                if (twobytes == 0x8130) 
+                if (twobytes == 0x8130)
                     binaryReader.ReadByte();
-                else if (twobytes == 0x8230) 
+                else if (twobytes == 0x8230)
                     binaryReader.ReadInt16();
-                else 
+                else
                     throw new CryptographicException("Wrong data");
 
                 twobytes = binaryReader.ReadUInt16();
-                if (twobytes != 0x0102) 
+                if (twobytes != 0x0102)
                     throw new CryptographicException("Wrong data");
 
                 bt = binaryReader.ReadByte();
-                if (bt != 0x00) 
+                if (bt != 0x00)
                     throw new CryptographicException("Wrong data");
 
                 elements = GetIntegerSize(binaryReader);
@@ -196,12 +196,12 @@ namespace PuppetCerts
 
             bt = binary.ReadByte();
 
-            if (bt != 0x02) 
+            if (bt != 0x02)
                 return 0;
 
             bt = binary.ReadByte();
 
-            if (bt == 0x81) 
+            if (bt == 0x81)
                 count = binary.ReadByte();
             else if (bt == 0x82)
             {
@@ -210,7 +210,7 @@ namespace PuppetCerts
                 byte[] modint = { lowbyte, highbyte, 0x00, 0x00 };
                 count = BitConverter.ToInt32(modint, 0);
             }
-            else 
+            else
                 count = bt;
 
             while (binary.ReadByte() == 0x00)
@@ -244,7 +244,6 @@ if (-not (Test-Path -Path $cert_path)) {
 
 Write-Verbose "Loading certificate(s) from disk..."
 $raw_content = [System.IO.File]::ReadAllText($cert_path)
-$certs = $raw_content -Split '(?<!^)(?=-----BEGIN CERTIFICATE-----)' 
 
 Write-Verbose "Opening certificate store $cert_type ..."
 $storename = $null
@@ -257,22 +256,23 @@ switch ($cert_type)
 $cert_store = New-Object -Type System.Security.Cryptography.X509Certificates.X509Store($storename, [System.Security.Cryptography.X509Certificates.StoreLocation]::LocalMachine)
 $cert_store.Open('ReadWrite')
 
-$certs | ForEach {
-  if ($key_path -ne '') {
-    $pfx_content += [System.IO.File]::ReadAllText($key_path)
-  }
-  $pfx = [PuppetCerts.PEMToX509]::Convert($_)
+$pfx_key_content = ''
+if ($key_path -ne '') { $pfx_key_content = [System.IO.File]::ReadAllText($key_path) }
+
+$raw_content | Out-Certificate | ForEach-Object -Process {
+  # Need to convert the Base64 Certificate back into a PEM format so that we can
+  # add the private key content if required.
+  $interim_pem = "-----BEGIN CERTIFICATE-----`n${_}`n-----END CERTIFICATE-----`n${pfx_key_content}"
+  $pfx = [PuppetCerts.PEMToX509]::Convert($interim_pem)
+  if ($null -eq $pfx) { Throw "Interim PFX content is not valid" }
 
   $cert_thumbprint = $pfx.Thumbprint.ToUpper()
   Write-Verbose "Certificate thumbprint is $cert_thumbprint"
 
   Write-Verbose "Checking if certificate exists..."
-  $found = $false
-  $cert_store.Certificates | % {
-    $found = $found -or ($_.Thumbprint.ToUpper() -eq $cert_thumbprint)
-  }
+  $found = $cert_store.Certificates | Where-Object { $_.Thumbprint.ToUpper() -eq $cert_thumbprint } | Select-Object -First 1
 
-  if ($found) {
+  if ($null -ne $found) {
     Write-Verbose "Certificate already exists"
   } else {
     Write-Verbose "Adding certificate to the store..."
