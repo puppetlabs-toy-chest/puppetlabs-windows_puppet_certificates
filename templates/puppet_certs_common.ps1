@@ -180,14 +180,14 @@ namespace PuppetCerts
                 elements = GetIntegerSize(binaryReader);
                 paramIQ = binaryReader.ReadBytes(elements);
 
-                EnsureLength(ref paramD, 256);
-                EnsureLength(ref paramDP, 128);
-                EnsureLength(ref paramDQ, 128);
+                EnsureLength(ref paramD, paramModulus.Length);
+                EnsureLength(ref paramDP, paramModulus.Length/2);
+                EnsureLength(ref paramDQ, paramModulus.Length/2);
                 EnsureLength(ref paramE, 3);
-                EnsureLength(ref paramIQ, 128);
-                EnsureLength(ref paramModulus, 256);
-                EnsureLength(ref paramP, 128);
-                EnsureLength(ref paramQ, 128);
+                EnsureLength(ref paramIQ, paramModulus.Length/2);
+                EnsureLength(ref paramModulus, paramModulus.Length);
+                EnsureLength(ref paramP, paramModulus.Length/2);
+                EnsureLength(ref paramQ, paramModulus.Length/2); 
 
                 RSAParameters rsaParameters = new RSAParameters();
                 rsaParameters.Modulus = paramModulus;
