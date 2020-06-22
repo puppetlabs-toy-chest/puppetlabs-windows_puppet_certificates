@@ -4,6 +4,7 @@
 fixtures:
   forge_modules:
     powershell: "puppetlabs/powershell"
+    pwshlib: "puppetlabs/pwshlib"
     stdlib: "puppetlabs/stdlib"
   symlinks:
     "windows_puppet_certificates": "#{source_dir}"
