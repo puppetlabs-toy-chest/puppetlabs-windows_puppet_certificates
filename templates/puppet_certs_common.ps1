@@ -13,6 +13,18 @@ Function Out-Certificate {
 }
 
 Function Import-CSharpCode {
+
+  # When puppet is run via 'puppet agent -t', or via the service, when the
+  # account used to execute the run is the 'Local System' account, the temp
+  # directory is set to the value seen below in the if test. When this happens
+  # the Add-Type commandlet cannot compile the C# code in the type definition.
+  # The compilation process requires creating temp files, and that process is
+  # broken if the temp directory is not fixed first.
+  if( $env:tmp -eq "$env:windir\system32\config\systemprofile\AppData\Local\Temp") {
+    $env:tmp = "$env:windir\Temp"
+    $env:temp = "$env:windir\Temp"
+  }
+
   Write-Verbose "Importing C# code..."
 
   # From https://stackoverflow.com/questions/7400500/how-to-get-private-key-from-pem-file
