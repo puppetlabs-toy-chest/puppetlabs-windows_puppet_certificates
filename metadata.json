@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-windows_puppet_certificates",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "puppetlabs",
   "summary": "A Puppet module to import the puppet certificates into the machine certificate store in Windows",
   "license": "Apache-2.0",
